@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>系统配置管理 - 学生课堂分析系统</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .admin-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .config-section {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .config-section h3 {
+            color: #667eea;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #5a6fd8;
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+        
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #218838;
+        }
+        
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        
+        .status-active {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .status-inactive {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .help-text {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #667eea;
+            text-decoration: none;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        
+        .back-link:hover {
+            color: #5a6fd8;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <a href="index.html" class="back-link">
+            <i class="fas fa-arrow-left"></i>
+            返回主页面
+        </a>
+        
+        <header class="header">
+            <div class="header-content">
+                <i class="fas fa-cogs header-icon"></i>
+                <h1>系统配置管理</h1>
+                <p class="header-subtitle">自定义AI服务和提示词</p>
+            </div>
+        </header>
+
+        <!-- AI服务提供商配置 -->
+        <div class="config-section">
+            <h3><i class="fas fa-robot"></i>AI服务提供商</h3>
+            
+            <div class="form-group">
+                <label for="ai-provider">当前AI提供商</label>
+                <select id="ai-provider">
+                    <option value="openai">OpenAI (GPT)</option>
+                    <option value="baidu">百度文心一言</option>
+                    <option value="alibaba">阿里通义千问</option>
+                    <option value="tencent">腾讯混元</option>
+                </select>
+                <div class="help-text">选择要使用的AI服务提供商</div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="openai-key">OpenAI API Key</label>
+                    <input type="password" id="openai-key" placeholder="sk-...">
+                </div>
+                <div class="form-group">
+                    <label for="openai-model">OpenAI 模型</label>
+                    <select id="openai-model">
+                        <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
+                        <option value="gpt-4">GPT-4</option>
+                        <option value="gpt-4-turbo">GPT-4 Turbo</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="baidu-key">百度 API Key</label>
+                    <input type="password" id="baidu-key" placeholder="百度API密钥">
+                </div>
+                <div class="form-group">
+                    <label for="baidu-secret">百度 Secret Key</label>
+                    <input type="password" id="baidu-secret" placeholder="百度Secret密钥">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="alibaba-key">阿里通义千问 API Key</label>
+                <input type="password" id="alibaba-key" placeholder="阿里API密钥">
+            </div>
+            
+            <div class="form-group">
+                <label for="tencent-key">腾讯混元 API Key</label>
+                <input type="password" id="tencent-key" placeholder="腾讯API密钥">
+            </div>
+            
+            <div class="btn-group">
+                <button class="btn btn-primary" onclick="switchProvider()">
+                    <i class="fas fa-exchange-alt"></i>
+                    切换提供商
+                </button>
+                <button class="btn btn-secondary" onclick="testConnection()">
+                    <i class="fas fa-plug"></i>
+                    测试连接
+                </button>
+            </div>
+        </div>
+
+        <!-- 提示词配置 -->
+        <div class="config-section">
+            <h3><i class="fas fa-comment-dots"></i>提示词配置</h3>
+            
+            <div class="form-group">
+                <label for="system-prompt">系统角色提示词</label>
+                <textarea id="system-prompt" placeholder="定义AI的角色和基本行为..."></textarea>
+                <div class="help-text">这个提示词定义了AI的基本角色和行为模式</div>
+            </div>
+            
+            <div class="form-group">
+                <label for="main-prompt">主要提示词模板</label>
+                <textarea id="main-prompt" placeholder="主要的评价生成提示词..."></textarea>
+                <div class="help-text">使用 {content} 和 {rating} 作为占位符</div>
+            </div>
+            
+            <div class="form-group">
+                <label for="excellent-prompt">优秀等级提示词</label>
+                <textarea id="excellent-prompt" placeholder="针对优秀学生的特殊提示词..."></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="good-prompt">良好等级提示词</label>
+                <textarea id="good-prompt" placeholder="针对良好学生的特殊提示词..."></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="average-prompt">一般等级提示词</label>
+                <textarea id="average-prompt" placeholder="针对一般学生的特殊提示词..."></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="poor-prompt">待改进等级提示词</label>
+                <textarea id="poor-prompt" placeholder="针对待改进学生的特殊提示词..."></textarea>
+            </div>
+            
+            <div class="btn-group">
+                <button class="btn btn-success" onclick="savePrompts()">
+                    <i class="fas fa-save"></i>
+                    保存提示词
+                </button>
+                <button class="btn btn-secondary" onclick="resetPrompts()">
+                    <i class="fas fa-undo"></i>
+                    重置为默认
+                </button>
+            </div>
+        </div>
+
+        <!-- 生成参数配置 -->
+        <div class="config-section">
+            <h3><i class="fas fa-sliders-h"></i>生成参数</h3>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="max-tokens">最大Token数</label>
+                    <input type="number" id="max-tokens" value="500" min="100" max="2000">
+                    <div class="help-text">控制生成文本的长度</div>
+                </div>
+                <div class="form-group">
+                    <label for="temperature">温度参数</label>
+                    <input type="number" id="temperature" value="0.7" min="0" max="2" step="0.1">
+                    <div class="help-text">控制生成的随机性 (0-2)</div>
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="min-content">最小内容长度</label>
+                    <input type="number" id="min-content" value="10" min="1" max="100">
+                    <div class="help-text">课堂内容的最小字符数</div>
+                </div>
+                <div class="form-group">
+                    <label for="max-content">最大内容长度</label>
+                    <input type="number" id="max-content" value="500" min="100" max="2000">
+                    <div class="help-text">课堂内容的最大字符数</div>
+                </div>
+            </div>
+            
+            <div class="btn-group">
+                <button class="btn btn-primary" onclick="saveParameters()">
+                    <i class="fas fa-save"></i>
+                    保存参数
+                </button>
+            </div>
+        </div>
+
+        <!-- 状态信息 -->
+        <div class="config-section">
+            <h3><i class="fas fa-info-circle"></i>系统状态</h3>
+            <div id="system-status">
+                <p>当前AI提供商: <span id="current-provider" class="status-indicator status-active">加载中...</span></p>
+                <p>支持的提供商: <span id="supported-providers">加载中...</span></p>
+                <p>最后更新: <span id="last-update">-</span></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 页面加载时获取当前配置
+        document.addEventListener('DOMContentLoaded', function() {
+            loadCurrentConfig();
+        });
+
+        // 加载当前配置
+        async function loadCurrentConfig() {
+            try {
+                const response = await fetch('/api/config');
+                const config = await response.json();
+                
+                // 更新UI
+                document.getElementById('ai-provider').value = config.currentProvider;
+                document.getElementById('current-provider').textContent = config.currentProvider;
+                document.getElementById('supported-providers').textContent = config.supportedProviders.join(', ');
+                document.getElementById('last-update').textContent = new Date().toLocaleString('zh-CN');
+                
+            } catch (error) {
+                console.error('加载配置失败:', error);
+                showMessage('加载配置失败', 'error');
+            }
+        }
+
+        // 切换AI提供商
+        async function switchProvider() {
+            const provider = document.getElementById('ai-provider').value;
+            
+            try {
+                const response = await fetch('/api/switch-provider', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ provider })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showMessage(result.message, 'success');
+                    loadCurrentConfig();
+                } else {
+                    showMessage(result.error, 'error');
+                }
+            } catch (error) {
+                console.error('切换提供商失败:', error);
+                showMessage('切换提供商失败', 'error');
+            }
+        }
+
+        // 测试连接
+        async function testConnection() {
+            showMessage('正在测试连接...', 'info');
+            
+            try {
+                const response = await fetch('/api/generate-evaluation', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        content: '测试连接',
+                        rating: '良好'
+                    })
+                });
+                
+                if (response.ok) {
+                    showMessage('连接测试成功！', 'success');
+                } else {
+                    showMessage('连接测试失败', 'error');
+                }
+            } catch (error) {
+                console.error('连接测试失败:', error);
+                showMessage('连接测试失败', 'error');
+            }
+        }
+
+        // 保存提示词
+        function savePrompts() {
+            const prompts = {
+                systemPrompt: document.getElementById('system-prompt').value,
+                mainPrompt: document.getElementById('main-prompt').value,
+                excellentPrompt: document.getElementById('excellent-prompt').value,
+                goodPrompt: document.getElementById('good-prompt').value,
+                averagePrompt: document.getElementById('average-prompt').value,
+                poorPrompt: document.getElementById('poor-prompt').value
+            };
+            
+            // 这里可以添加保存到后端的逻辑
+            localStorage.setItem('custom-prompts', JSON.stringify(prompts));
+            showMessage('提示词已保存到本地', 'success');
+        }
+
+        // 重置提示词
+        function resetPrompts() {
+            if (confirm('确定要重置为默认提示词吗？')) {
+                localStorage.removeItem('custom-prompts');
+                loadDefaultPrompts();
+                showMessage('已重置为默认提示词', 'success');
+            }
+        }
+
+        // 加载默认提示词
+        function loadDefaultPrompts() {
+            document.getElementById('system-prompt').value = '你是一名专业的教育评价专家，擅长为学生提供详细、建设性的课堂表现评价。';
+            document.getElementById('main-prompt').value = `作为一名教育专家，请根据以下课堂内容和评价等级，生成一份专业、详细的学生课堂表现评价：
+
+课堂内容：{content}
+评价等级：{rating}
+
+请从以下几个方面进行评价：
+1. 学习态度和参与度
+2. 知识掌握情况
+3. 思维能力和创新性
+4. 团队合作和沟通能力
+5. 改进建议
+
+评价要求：
+- 语言专业且富有建设性
+- 针对性强，具体指出优点和不足
+- 提供可操作的建议
+- 字数控制在200-300字之间
+- 语调积极正面，鼓励学生进步
+
+请直接输出评价内容，不要包含其他格式标记。`;
+            document.getElementById('excellent-prompt').value = '该学生表现优秀，请重点突出其优点和值得表扬的地方，同时给出进一步提升的建议。';
+            document.getElementById('good-prompt').value = '该学生表现良好，请平衡地评价其优点和需要改进的地方，给出具体的改进建议。';
+            document.getElementById('average-prompt').value = '该学生表现一般，请指出其不足之处，并给出具体的改进建议和鼓励。';
+            document.getElementById('poor-prompt').value = '该学生需要改进，请温和地指出问题所在，并给出具体的改进方案和鼓励。';
+        }
+
+        // 保存参数
+        function saveParameters() {
+            const parameters = {
+                maxTokens: document.getElementById('max-tokens').value,
+                temperature: document.getElementById('temperature').value,
+                minContent: document.getElementById('min-content').value,
+                maxContent: document.getElementById('max-content').value
+            };
+            
+            localStorage.setItem('custom-parameters', JSON.stringify(parameters));
+            showMessage('参数已保存到本地', 'success');
+        }
+
+        // 显示消息
+        function showMessage(message, type) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message message-${type}`;
+            messageDiv.textContent = message;
+            messageDiv.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 15px 20px;
+                border-radius: 8px;
+                color: white;
+                font-weight: 600;
+                z-index: 1000;
+                animation: slideIn 0.3s ease;
+            `;
+            
+            if (type === 'success') {
+                messageDiv.style.background = '#28a745';
+            } else if (type === 'error') {
+                messageDiv.style.background = '#dc3545';
+            } else {
+                messageDiv.style.background = '#17a2b8';
+            }
+            
+            document.body.appendChild(messageDiv);
+            
+            setTimeout(() => {
+                messageDiv.remove();
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第三方API测试 - 学生课堂分析系统</title>
+    <link rel="stylesheet" href="public/styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .test-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .test-section {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .test-section h3 {
+            color: #667eea;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .config-info {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+            margin-bottom: 20px;
+        }
+        
+        .config-info h4 {
+            margin-bottom: 10px;
+            color: #333;
+        }
+        
+        .config-info p {
+            margin: 5px 0;
+            color: #666;
+        }
+        
+        .test-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            resize: vertical;
+            min-height: 120px;
+            margin-bottom: 15px;
+        }
+        
+        .test-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .rating-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .rating-btn {
+            padding: 10px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+        
+        .rating-btn:hover {
+            border-color: #667eea;
+            background: #f8f9ff;
+        }
+        
+        .rating-btn.active {
+            border-color: #667eea;
+            background: #667eea;
+            color: white;
+        }
+        
+        .test-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .test-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+        
+        .test-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .result-area {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #28a745;
+            margin-top: 20px;
+            display: none;
+        }
+        
+        .result-area h4 {
+            margin-bottom: 15px;
+            color: #28a745;
+        }
+        
+        .result-text {
+            line-height: 1.8;
+            color: #333;
+            white-space: pre-wrap;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #667eea;
+        }
+        
+        .spinner {
+            width: 30px;
+            height: 30px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #dc3545;
+            margin-top: 20px;
+            display: none;
+        }
+        
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #28a745;
+            margin-top: 20px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <header class="header">
+            <div class="header-content">
+                <i class="fas fa-vial header-icon"></i>
+                <h1>第三方API测试</h1>
+                <p class="header-subtitle">测试课程内容相关的评价生成</p>
+            </div>
+        </header>
+
+        <!-- 配置信息 -->
+        <div class="test-section">
+            <h3><i class="fas fa-cog"></i>当前配置</h3>
+            <div class="config-info">
+                <h4>API提供商信息</h4>
+                <p><strong>服务地址:</strong> https://openai.linktre.cc/v1</p>
+                <p><strong>模型:</strong> gpt-3.5-turbo</p>
+                <p><strong>API Key:</strong> sk-xw0oWTC7WyTfI10_J4dkdy9qmCV4Mv8hrK7s6wrN8ocm2b0DSmYEMknVEB4</p>
+                <p><strong>特点:</strong> 支持课程内容紧密结合的评价生成</p>
+            </div>
+        </div>
+
+        <!-- 测试区域 -->
+        <div class="test-section">
+            <h3><i class="fas fa-flask"></i>评价生成测试</h3>
+            
+            <div class="form-group">
+                <label for="test-content">课堂内容（请详细描述课程内容和学生表现）：</label>
+                <textarea 
+                    id="test-content" 
+                    class="test-input" 
+                    placeholder="例如：本节课学习了数学中的二次函数，包括二次函数的定义和一般形式 y=ax²+bx+c，二次函数的图像特征（开口方向、顶点、对称轴），二次函数与一元二次方程的关系，以及实际应用问题。学生在课堂中表现积极，能够回答关于二次函数开口方向的问题，但在计算顶点坐标时出现了一些错误..."
+                ></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label>评价等级：</label>
+                <div class="rating-buttons">
+                    <button class="rating-btn" data-rating="优秀">优秀</button>
+                    <button class="rating-btn" data-rating="良好">良好</button>
+                    <button class="rating-btn" data-rating="一般">一般</button>
+                    <button class="rating-btn" data-rating="待改进">待改进</button>
+                </div>
+            </div>
+            
+            <button id="test-btn" class="test-btn" disabled>
+                <i class="fas fa-play"></i>
+                生成评价测试
+            </button>
+            
+            <div id="loading" class="loading" style="display: none;">
+                <div class="spinner"></div>
+                <p>正在生成评价中...</p>
+            </div>
+            
+            <div id="result-area" class="result-area">
+                <h4><i class="fas fa-check-circle"></i>生成的评价</h4>
+                <div id="result-text" class="result-text"></div>
+            </div>
+            
+            <div id="error-message" class="error-message">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span id="error-text"></span>
+            </div>
+            
+            <div id="success-message" class="success-message">
+                <i class="fas fa-check-circle"></i>
+                <span>评价生成成功！</span>
+            </div>
+        </div>
+
+        <!-- 使用说明 -->
+        <div class="test-section">
+            <h3><i class="fas fa-info-circle"></i>使用说明</h3>
+            <div class="config-info">
+                <h4>测试要点</h4>
+                <p>1. <strong>课程内容具体化:</strong> 请详细描述本节课的具体知识点和学生表现</p>
+                <p>2. <strong>评价相关性:</strong> 生成的评价应该紧密结合课程内容，避免空泛的套话</p>
+                <p>3. <strong>知识点导向:</strong> 评价应该明确指出学生在哪些知识点上表现良好或需要加强</p>
+                <p>4. <strong>实例支撑:</strong> 评价应该基于课堂中的具体表现、回答、互动等实际情况</p>
+                
+                <h4 style="margin-top: 20px;">示例课程内容</h4>
+                <p><strong>数学课:</strong> 二次函数、顶点坐标计算、图像特征分析</p>
+                <p><strong>语文课:</strong> 古诗词理解、修辞手法分析、写作技巧</p>
+                <p><strong>英语课:</strong> 语法结构、词汇运用、口语表达</p>
+                <p><strong>物理课:</strong> 力学原理、实验操作、公式应用</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let selectedRating = null;
+        
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeEventListeners();
+            updateTestButton();
+        });
+        
+        // 事件监听器
+        function initializeEventListeners() {
+            // 内容输入监听
+            document.getElementById('test-content').addEventListener('input', updateTestButton);
+            
+            // 评价等级选择
+            document.querySelectorAll('.rating-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // 移除其他按钮的active状态
+                    document.querySelectorAll('.rating-btn').forEach(b => b.classList.remove('active'));
+                    // 添加当前按钮的active状态
+                    this.classList.add('active');
+                    selectedRating = this.dataset.rating;
+                    updateTestButton();
+                });
+            });
+            
+            // 测试按钮点击
+            document.getElementById('test-btn').addEventListener('click', generateTestEvaluation);
+        }
+        
+        // 更新测试按钮状态
+        function updateTestButton() {
+            const hasContent = document.getElementById('test-content').value.trim().length > 0;
+            const hasRating = selectedRating !== null;
+            document.getElementById('test-btn').disabled = !(hasContent && hasRating);
+        }
+        
+        // 生成测试评价
+        async function generateTestEvaluation() {
+            const content = document.getElementById('test-content').value.trim();
+            
+            if (!content) {
+                showError('请输入课堂内容');
+                return;
+            }
+            
+            if (!selectedRating) {
+                showError('请选择评价等级');
+                return;
+            }
+            
+            // 显示加载状态
+            showLoading(true);
+            hideMessages();
+            
+            try {
+                // 模拟API调用（实际使用时需要后端支持）
+                const response = await simulateAPI(content, selectedRating);
+                
+                if (response.success) {
+                    showResult(response.evaluation);
+                    showSuccess();
+                } else {
+                    showError(response.error);
+                }
+            } catch (error) {
+                console.error('测试失败:', error);
+                showError('测试过程中出现错误，请检查网络连接');
+            } finally {
+                showLoading(false);
+            }
+        }
+        
+        // 模拟API调用
+        async function simulateAPI(content, rating) {
+            // 模拟网络延迟
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            
+            // 模拟API响应
+            const mockEvaluation = generateMockEvaluation(content, rating);
+            
+            return {
+                success: true,
+                evaluation: mockEvaluation
+            };
+        }
+        
+        // 生成模拟评价
+        function generateMockEvaluation(content, rating) {
+            const evaluations = {
+                '优秀': `该学生在${extractSubject(content)}这节课中表现优秀。在课堂开始时，能够准确回答关于${extractKeywords(content)[0] || '核心概念'}的问题，显示出对基本概念的深入理解。在讨论${extractKeywords(content)[1] || '重要知识点'}时，学生积极参与，能够正确${extractKeywords(content)[2] || '分析和应用'}。
+
+特别是在${extractKeywords(content)[3] || '实际应用'}环节，学生展现出了创新思维和扎实的基础知识。能够将理论知识与实际问题相结合，提出了有价值的见解。在小组讨论中，学生主动分享自己的理解，帮助其他同学解决疑问。
+
+建议学生继续保持这种积极的学习态度，可以尝试挑战更高难度的${extractSubject(content)}问题，进一步拓展知识面。同时，可以将所学知识应用到更广泛的领域中，培养跨学科思维能力。`,
+                
+                '良好': `该学生在${extractSubject(content)}这节课中表现良好。在课堂开始时，能够回答关于${extractKeywords(content)[0] || '基本概念'}的问题，显示出对核心内容的理解。在讨论${extractKeywords(content)[1] || '重要知识点'}时，学生适度参与，能够基本掌握相关概念。
+
+然而，在${extractKeywords(content)[2] || '具体应用'}环节，学生在${extractKeywords(content)[3] || '某些方面'}还需要加强。虽然能够理解基本概念，但在实际运用时偶尔出现错误。这表明学生对理论知识掌握较好，但在实践应用上还需要更多练习。
+
+建议学生在课后多练习${extractKeywords(content)[4] || '相关题目'}，特别关注${extractKeywords(content)[5] || '容易出错的地方'}。同时，可以尝试通过不同的方法来验证自己的理解，加深对${extractSubject(content)}的认识。`,
+                
+                '一般': `该学生在${extractSubject(content)}这节课中表现一般。在课堂开始时，对${extractKeywords(content)[0] || '基本概念'}的理解不够深入，回答问题时显得有些犹豫。在讨论${extractKeywords(content)[1] || '重要知识点'}时，学生参与度不高，对某些概念的理解存在偏差。
+
+在${extractKeywords(content)[2] || '具体应用'}环节，学生在${extractKeywords(content)[3] || '多个方面'}都遇到了困难。这表明学生对${extractSubject(content)}的基础知识掌握不够扎实，需要加强基础学习。
+
+建议学生重新复习${extractKeywords(content)[4] || '基础概念'}，确保对核心内容有清晰的理解。同时，可以寻求老师或同学的帮助，通过讨论和练习来巩固知识。建议制定详细的学习计划，逐步提高对${extractSubject(content)}的掌握程度。`,
+                
+                '待改进': `该学生在${extractSubject(content)}这节课中需要改进。在课堂开始时，对${extractKeywords(content)[0] || '基本概念'}的理解存在明显不足，回答问题时经常出现错误。在讨论${extractKeywords(content)[1] || '重要知识点'}时，学生参与度很低，对核心概念的理解有较大偏差。
+
+在${extractKeywords(content)[2] || '具体应用'}环节，学生在${extractKeywords(content)[3] || '多个方面'}都遇到了严重困难。这表明学生对${extractSubject(content)}的基础知识掌握严重不足，需要从基础开始重新学习。
+
+建议学生制定详细的学习计划，从${extractKeywords(content)[4] || '最基础的概念'}开始，逐步建立知识体系。同时，建议寻求老师或同学的帮助，通过一对一的辅导来弥补知识漏洞。建议增加课后练习时间，通过大量的练习来巩固基础知识。`
+            };
+            
+            return evaluations[rating] || '评价生成中...';
+        }
+        
+        // 提取学科
+        function extractSubject(content) {
+            if (content.includes('数学') || content.includes('二次函数') || content.includes('方程')) return '数学';
+            if (content.includes('语文') || content.includes('古诗词') || content.includes('修辞')) return '语文';
+            if (content.includes('英语') || content.includes('语法') || content.includes('词汇')) return '英语';
+            if (content.includes('物理') || content.includes('力学') || content.includes('实验')) return '物理';
+            if (content.includes('化学') || content.includes('反应') || content.includes('元素')) return '化学';
+            if (content.includes('生物') || content.includes('细胞') || content.includes('遗传')) return '生物';
+            return '课程';
+        }
+        
+        // 提取关键词
+        function extractKeywords(content) {
+            const keywords = [];
+            
+            // 数学关键词
+            if (content.includes('二次函数')) keywords.push('二次函数');
+            if (content.includes('顶点')) keywords.push('顶点坐标');
+            if (content.includes('对称轴')) keywords.push('对称轴');
+            if (content.includes('开口')) keywords.push('开口方向');
+            if (content.includes('抛物线')) keywords.push('抛物线');
+            if (content.includes('方程')) keywords.push('方程求解');
+            
+            // 语文关键词
+            if (content.includes('古诗词')) keywords.push('古诗词理解');
+            if (content.includes('修辞')) keywords.push('修辞手法');
+            if (content.includes('写作')) keywords.push('写作技巧');
+            
+            // 英语关键词
+            if (content.includes('语法')) keywords.push('语法结构');
+            if (content.includes('词汇')) keywords.push('词汇运用');
+            if (content.includes('口语')) keywords.push('口语表达');
+            
+            // 物理关键词
+            if (content.includes('力学')) keywords.push('力学原理');
+            if (content.includes('实验')) keywords.push('实验操作');
+            if (content.includes('公式')) keywords.push('公式应用');
+            
+            return keywords.length > 0 ? keywords : ['核心概念', '重要知识点', '具体应用', '实际运用', '相关练习', '基础概念'];
+        }
+        
+        // 显示结果
+        function showResult(evaluation) {
+            document.getElementById('result-text').textContent = evaluation;
+            document.getElementById('result-area').style.display = 'block';
+        }
+        
+        // 显示加载状态
+        function showLoading(show) {
+            document.getElementById('loading').style.display = show ? 'block' : 'none';
+            document.getElementById('test-btn').disabled = show;
+        }
+        
+        // 显示错误消息
+        function showError(message) {
+            document.getElementById('error-text').textContent = message;
+            document.getElementById('error-message').style.display = 'block';
+        }
+        
+        // 显示成功消息
+        function showSuccess() {
+            document.getElementById('success-message').style.display = 'block';
+        }
+        
+        // 隐藏消息
+        function hideMessages() {
+            document.getElementById('error-message').style.display = 'none';
+            document.getElementById('success-message').style.display = 'none';
+            document.getElementById('result-area').style.display = 'none';
+        }
+    </script>
+</body>
+</html>

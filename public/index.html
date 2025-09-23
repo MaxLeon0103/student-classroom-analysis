@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>学生课堂分析系统</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- 头部 -->
+        <header class="header">
+            <div class="header-content">
+                <i class="fas fa-graduation-cap header-icon"></i>
+                <h1>学生课堂分析系统</h1>
+                <p class="header-subtitle">智能评价，精准分析</p>
+            </div>
+        </header>
+
+        <!-- 主要内容区域 -->
+        <main class="main-content">
+            <div class="form-container">
+                <!-- 课堂内容输入区域 -->
+                <div class="input-section">
+                    <div class="section-header">
+                        <i class="fas fa-book-open section-icon"></i>
+                        <h2>课堂内容记录</h2>
+                    </div>
+                    <div class="input-group">
+                        <label for="classroom-content">请输入课堂内容：</label>
+                        <textarea 
+                            id="classroom-content" 
+                            placeholder="请详细描述学生在课堂上的表现，包括学习态度、参与度、知识掌握情况等..."
+                            rows="6"
+                        ></textarea>
+                        <div class="char-count">
+                            <span id="char-count">0</span> / 500 字符
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 评价等级选择区域 -->
+                <div class="rating-section">
+                    <div class="section-header">
+                        <i class="fas fa-star section-icon"></i>
+                        <h2>评价等级</h2>
+                    </div>
+                    <div class="rating-options">
+                        <div class="rating-item">
+                            <input type="radio" id="excellent" name="rating" value="优秀">
+                            <label for="excellent" class="rating-label excellent">
+                                <i class="fas fa-star"></i>
+                                <span>优秀</span>
+                            </label>
+                        </div>
+                        <div class="rating-item">
+                            <input type="radio" id="good" name="rating" value="良好">
+                            <label for="good" class="rating-label good">
+                                <i class="fas fa-thumbs-up"></i>
+                                <span>良好</span>
+                            </label>
+                        </div>
+                        <div class="rating-item">
+                            <input type="radio" id="average" name="rating" value="一般">
+                            <label for="average" class="rating-label average">
+                                <i class="fas fa-minus"></i>
+                                <span>一般</span>
+                            </label>
+                        </div>
+                        <div class="rating-item">
+                            <input type="radio" id="poor" name="rating" value="待改进">
+                            <label for="poor" class="rating-label poor">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                <span>待改进</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 生成按钮 -->
+                <div class="action-section">
+                    <button id="generate-btn" class="generate-btn" disabled>
+                        <i class="fas fa-magic"></i>
+                        <span>生成评价</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 评价结果展示区域 -->
+            <div class="result-container" id="result-container" style="display: none;">
+                <div class="section-header">
+                    <i class="fas fa-clipboard-check section-icon"></i>
+                    <h2>AI生成评价</h2>
+                </div>
+                <div class="result-content">
+                    <div class="result-header">
+                        <div class="result-meta">
+                            <span class="result-date" id="result-date"></span>
+                            <span class="result-rating" id="result-rating"></span>
+                        </div>
+                        <button id="copy-btn" class="copy-btn">
+                            <i class="fas fa-copy"></i>
+                            复制
+                        </button>
+                    </div>
+                    <div class="result-text" id="result-text"></div>
+                </div>
+            </div>
+        </main>
+
+        <!-- 加载提示 -->
+        <div class="loading-overlay" id="loading-overlay" style="display: none;">
+            <div class="loading-content">
+                <div class="spinner"></div>
+                <p>AI正在生成评价中...</p>
+            </div>
+        </div>
+
+        <!-- 错误提示 -->
+        <div class="error-toast" id="error-toast" style="display: none;">
+            <i class="fas fa-exclamation-circle"></i>
+            <span id="error-message"></span>
+        </div>
+
+        <!-- 成功提示 -->
+        <div class="success-toast" id="success-toast" style="display: none;">
+            <i class="fas fa-check-circle"></i>
+            <span>评价生成成功！</span>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
